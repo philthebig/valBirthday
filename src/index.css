@@ -350,7 +350,8 @@ body {
 .stop-card__header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   margin-bottom: 0.75rem;
 }
 
@@ -360,6 +361,21 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold);
+}
+
+.stop-card__time {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--blue-glow);
+  margin-left: auto;
+}
+
+.stop-card__time--flex {
+  color: var(--mint);
+  font-size: 0.7rem;
+  text-align: right;
+  max-width: 9rem;
+  line-height: 1.2;
 }
 
 .stop-card__emoji {

@@ -14,6 +14,6 @@ export const config = {
   },
 
   huntTitle: 'Chasse au Trésor — Tremblant',
-  huntSubtitle: 'Une aventure en famille, à votre rythme — Valérie, Émile & toi',
+  huntSubtitle: 'Une aventure en famille — poterie à 10h, tour des chalets & A Mano ce soir',
   familyTagline: '👶 Pensée pour les familles — pauses bienvenues, poussette OK!',
 };

@@ -22,7 +22,7 @@ export function Welcome({ onStart }: WelcomeProps) {
         Commencer l'aventure 🗺️
       </button>
       <p className="welcome__footer">
-        {huntStops.length} trésors à découvrir · Mont-Tremblant · Holiday Inn → A Mano
+        {huntStops.length} trésors · Déjeuner → Poterie 10h → Chalets → A Mano
       </p>
     </div>
   );

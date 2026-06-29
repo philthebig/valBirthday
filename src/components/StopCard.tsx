@@ -58,6 +58,12 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
     <div className="stop-card">
       <div className="stop-card__header">
         <span className="stop-card__number">Étape {stop.order}</span>
+        {stop.scheduledTime && (
+          <span className="stop-card__time">🕐 {stop.scheduledTime}</span>
+        )}
+        {stop.flexibleTime && (
+          <span className="stop-card__time stop-card__time--flex">🚗 {stop.flexibleTime}</span>
+        )}
         <span className="stop-card__emoji" aria-hidden="true">
           {stop.emoji}
         </span>
