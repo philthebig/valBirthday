@@ -10,12 +10,12 @@ import { useEffect } from 'react';
 interface MemoryCollageProps {
   stops: HuntStop[];
   photos: PhotoMap;
+  onReplay?: () => void;
 }
 
-export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
+export function MemoryCollage({ stops, photos, onReplay }: MemoryCollageProps) {
   const [generating, setGenerating] = useState<'idle' | 'image' | 'pdf'>('idle');
   const [status, setStatus] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     goldBurst();
@@ -23,7 +23,6 @@ export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
     return () => clearTimeout(t);
   }, []);
 
-  const missingCount = stops.filter((s) => !getPhoto(photos, s.order)).length;
   const dateSlug = new Date().toISOString().slice(0, 10);
   const baseName = `album-souvenir-${config.recipientName.toLowerCase()}-tremblant-${dateSlug}`;
 
@@ -38,12 +37,8 @@ export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
         `${baseName}.jpg`,
         `Album Souvenir — ${config.recipientName}`,
       );
-      if (result === 'shared') {
-        setStatus('Album partagé — enregistre-le dans tes photos!');
-      } else if (result === 'downloaded') {
-        setStatus('Image téléchargée!');
-      }
-      setPreviewUrl(canvas.toDataURL('image/jpeg', 0.85));
+      if (result === 'shared') setStatus('Album partagé — enregistre-le dans tes photos!');
+      else if (result === 'downloaded') setStatus('Image téléchargée!');
     } catch {
       setStatus('Erreur lors de la création. Réessaie.');
     } finally {
@@ -56,10 +51,8 @@ export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
     setStatus(null);
     try {
       const canvas = await generateAlbumImage(stops, photos);
-      const { downloadPdfFromCanvas: savePdf } = await import('../utils/downloadAlbum');
-      await savePdf(canvas, `${baseName}.pdf`);
+      await downloadPdfFromCanvas(canvas, `${baseName}.pdf`);
       setStatus('PDF téléchargé!');
-      setPreviewUrl(canvas.toDataURL('image/jpeg', 0.85));
     } catch {
       setStatus('Erreur lors du PDF. Réessaie.');
     } finally {
@@ -70,17 +63,13 @@ export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
   return (
     <div className="memory-collage">
       <header className="memory-collage__header">
-        <h2 className="memory-collage__title">Joyeux Anniversaire {config.recipientName} ! 🎉</h2>
-        <p className="memory-collage__eyebrow">{config.huntTitle}</p>
-        <p className="memory-collage__subtitle">Pour {config.recipientName} 💛</p>
-      </header>
-
-      {missingCount > 0 && (
-        <p className="memory-collage__missing" role="status">
-          {missingCount} photo{missingCount > 1 ? 's' : ''} manquante{missingCount > 1 ? 's' : ''} —
-          l&apos;album utilisera des emplacements vides.
+        <h2 className="memory-collage__title">
+          Joyeux Anniversaire {config.recipientName} ! 💛
+        </h2>
+        <p className="memory-collage__subtitle">
+          Voici les souvenirs de ta journée à Tremblant :
         </p>
-      )}
+      </header>
 
       <div className="memory-collage__grid">
         {stops.map((stop) => {
@@ -94,43 +83,40 @@ export function MemoryCollage({ stops, photos }: MemoryCollageProps) {
                   <div className="memory-collage__placeholder">{stop.emoji}</div>
                 )}
               </div>
-              <figcaption className="memory-collage__caption">
-                Stop {stop.order}: {stop.name}
-              </figcaption>
+              <figcaption className="memory-collage__caption">{stop.name}</figcaption>
             </figure>
           );
         })}
       </div>
 
-      {previewUrl && (
-        <div className="memory-collage__preview-wrap">
-          <p className="memory-collage__preview-label">Aperçu de ton album</p>
-          <img src={previewUrl} alt="Aperçu album généré" className="memory-collage__preview" />
-        </div>
+      <p className="memory-collage__conclusion">
+        {config.finalTreasure.message}
+      </p>
+
+      {onReplay && (
+        <button type="button" className="btn btn--primary memory-collage__replay" onClick={onReplay}>
+          Revivre la journée
+        </button>
       )}
 
-      <div className="memory-collage__finale">
-        <p className="memory-collage__message">{config.finalTreasure.message}</p>
-        <p className="memory-collage__surprise">{config.finalTreasure.surpriseHint}</p>
+      <div className="memory-collage__export">
+        <button
+          type="button"
+          className="btn btn--ghost memory-collage__export-btn"
+          onClick={handleGenerateImage}
+          disabled={generating !== 'idle'}
+        >
+          {generating === 'image' ? 'Création…' : 'Sauvegarder l\'album (image)'}
+        </button>
+        <button
+          type="button"
+          className="btn btn--ghost memory-collage__export-btn"
+          onClick={handleGeneratePdf}
+          disabled={generating !== 'idle'}
+        >
+          {generating === 'pdf' ? 'Création…' : 'Télécharger en PDF'}
+        </button>
       </div>
-
-      <button
-        type="button"
-        className="btn btn--primary memory-collage__save"
-        onClick={handleGenerateImage}
-        disabled={generating !== 'idle'}
-      >
-        {generating === 'image' ? 'Création en cours…' : 'Sauvegarder ton Album Souvenir (Image)'}
-      </button>
-
-      <button
-        type="button"
-        className="btn btn--ghost memory-collage__save-pdf"
-        onClick={handleGeneratePdf}
-        disabled={generating !== 'idle'}
-      >
-        {generating === 'pdf' ? 'Création du PDF…' : 'Télécharger en PDF'}
-      </button>
 
       {status && (
         <p className="memory-collage__status" role="status">

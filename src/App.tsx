@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { config } from './config';
 import { huntStops } from './data/hunt';
 import { APP_VERSION } from './hooks/huntStorage';
 import { useHuntProgress } from './hooks/useHuntProgress';
 import { DiscoveredStops } from './components/DiscoveredStops';
 import { MemoryCollage } from './components/MemoryCollage';
-import { PhotoCapture } from './components/PhotoCapture';
 import { ProgressBar } from './components/ProgressBar';
 import { ResetProgressButton } from './components/ResetProgressButton';
 import { StopCard } from './components/StopCard';
@@ -31,14 +30,10 @@ export default function App() {
     progress,
   } = useHuntProgress(huntStops.length);
 
-  const [revealedId, setRevealedId] = useState<string | null>(null);
-
   const handleReset = async () => {
     await resetHunt();
-    setRevealedId(null);
   };
 
-  // Refresh photos when opening album
   useEffect(() => {
     if (showAlbumFlag || allRiddlesSolved) {
       refreshPhotos();
@@ -51,7 +46,7 @@ export default function App() {
         <span className="loading__mountain" aria-hidden="true">
           🏔️
         </span>
-        <p>Chargement de l'aventure…</p>
+        <p>Chargement de l&apos;aventure…</p>
       </div>
     );
   }
@@ -66,8 +61,7 @@ export default function App() {
     );
   }
 
-  const showAlbum =
-    (showAlbumFlag || allRiddlesSolved) && !awaitingPhotoId && !revealedId;
+  const showAlbum = (showAlbumFlag || allRiddlesSolved) && !awaitingPhotoId;
 
   if (showAlbum) {
     return (
@@ -79,8 +73,7 @@ export default function App() {
           label={`Souvenirs ${photoCount}/${huntStops.length}`}
           full
         />
-        <MemoryCollage stops={huntStops} photos={treasureHuntPhotos} />
-        <ResetProgressButton onReset={handleReset} variant="prominent" />
+        <MemoryCollage stops={huntStops} photos={treasureHuntPhotos} onReplay={handleReset} />
         <p className="app-version">v{APP_VERSION}</p>
       </main>
     );
@@ -88,14 +81,11 @@ export default function App() {
 
   const activeStop = huntStops[currentIndex];
   const photoStop = awaitingPhotoId ? huntStops.find((s) => s.id === awaitingPhotoId) : null;
-  const revealedStop = revealedId ? huntStops.find((s) => s.id === revealedId) : null;
-  const displayStop = revealedStop ?? photoStop ?? activeStop;
-
+  const displayStop = photoStop ?? activeStop;
   const isPhotoPhase = awaitingPhotoId != null && awaitingPhotoId === displayStop?.id;
-  const isRevealed = revealedId != null && revealedId === displayStop?.id;
 
   const completedStops = huntStops.filter(
-    (s) => completedIds.includes(s.id) && s.id !== revealedId && s.id !== awaitingPhotoId,
+    (s) => completedIds.includes(s.id) && s.id !== awaitingPhotoId,
   );
 
   const handleGuessCorrect = (stop: (typeof huntStops)[number]) => {
@@ -105,15 +95,10 @@ export default function App() {
   const handlePhotoConfirm = async (base64: string): Promise<boolean> => {
     if (!displayStop || !isPhotoPhase) return false;
     const ok = await savePhotoAndComplete(displayStop.id, displayStop.order, base64);
-    if (ok) setRevealedId(displayStop.id);
-    return ok;
-  };
-
-  const handleContinue = () => {
-    setRevealedId(null);
-    if (completedIds.length >= huntStops.length) {
+    if (ok && displayStop.order >= huntStops.length) {
       openAlbum();
     }
+    return ok;
   };
 
   return (
@@ -128,50 +113,19 @@ export default function App() {
         progress={progress}
         current={completedIds.length}
         total={huntStops.length}
-        label={
-          isPhotoPhase
-            ? 'La Touche Souvenir 📸'
-            : isRevealed
-              ? 'Destination dévoilée'
-              : 'Énigmes résolues'
-        }
+        label={isPhotoPhase ? 'La Touche Souvenir 📸' : 'Énigmes résolues'}
       />
 
-      {!isPhotoPhase && !allRiddlesSolved && (
-        <DiscoveredStops completedStops={completedStops} total={huntStops.length} />
-      )}
+      {!isPhotoPhase && <DiscoveredStops completedStops={completedStops} total={huntStops.length} />}
 
-      {allRiddlesSolved && !isPhotoPhase && !isRevealed && (
-        <div className="stuck-card">
-          <p className="stuck-card__title">Chasse terminée! 🎉</p>
-          <p className="stuck-card__text">
-            {photoCount}/{huntStops.length} souvenirs capturés
-          </p>
-          <button type="button" className="btn btn--primary" onClick={openAlbum}>
-            Voir l&apos;album souvenir →
-          </button>
-          <ResetProgressButton onReset={handleReset} variant="prominent" />
-        </div>
-      )}
-
-      {displayStop && isPhotoPhase && (
-        <PhotoCapture
-          key={`photo-${displayStop.id}`}
-          enigmeNumber={displayStop.order}
-          instruction={displayStop.photoInstruction}
-          existingPreview={treasureHuntPhotos[displayStop.order]}
-          onConfirm={handlePhotoConfirm}
-        />
-      )}
-
-      {displayStop && !isPhotoPhase && (isRevealed || !allRiddlesSolved) && (
+      {displayStop && (
         <StopCard
-          key={`${displayStop.id}-${isRevealed ? 'revealed' : 'mystery'}`}
+          key={`${displayStop.id}-${isPhotoPhase ? 'photo' : 'mystery'}`}
           stop={displayStop}
-          totalStops={huntStops.length}
-          phase={isRevealed ? 'revealed' : 'mystery'}
+          phase={isPhotoPhase ? 'photo' : 'mystery'}
           onGuessCorrect={handleGuessCorrect}
-          onContinue={isRevealed ? handleContinue : undefined}
+          onPhotoConfirm={handlePhotoConfirm}
+          existingPhoto={treasureHuntPhotos[displayStop.order]}
         />
       )}
 

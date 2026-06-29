@@ -423,6 +423,32 @@ body {
   text-align: center;
 }
 
+.memory-collage__conclusion {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.memory-collage__replay {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.memory-collage__export {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.memory-collage__export-btn {
+  width: 100%;
+  font-size: 0.85rem;
+}
+
 .memory-collage__finale {
   background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.12);
