@@ -23,9 +23,9 @@ npm run dev
 |---|------|------------------|
 | 1 | Petit-déjeuner — Holiday Inn | `holiday inn`, `déjeuner` |
 | 2 | Studio Créatif — poterie (10h) | `studio créatif`, `poterie` |
-| 3 | Village piétonnier | `village` |
-| 4 | Tour des grands chalets (en voiture) | `chalets`, `voiture` |
-| 5 | Place Saint-Bernard | `saint-bernard`, `horloge` |
+| 3 | Dîner de ton choix | `dîner`, `restaurant`, `terrasse`, `choix` |
+| 4 | Tour des grands chalets (en voiture) | `chalets`, `voiture`, `tour` |
+| 5 | Activité de ton choix | `activité`, `plage`, `shopping`, `choix` |
 | 6 | Rocky Mountain Chocolate | `rocky mountain`, `chocolat`, `fudge` |
 | 7 | A Mano Trattoria | `a mano`, `italien` |
 
