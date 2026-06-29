@@ -1,0 +1,590 @@
+:root {
+  --bg-deep: #0f1f33;
+  --bg-mid: #1a3352;
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-solid: #1e3d5c;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --gold: #fbbf24;
+  --gold-soft: #fde68a;
+  --pink: #f472b6;
+  --pink-soft: #fbcfe8;
+  --mint: #34d399;
+  --blue-glow: #60a5fa;
+  --radius: 1.25rem;
+  --radius-sm: 0.75rem;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(96, 165, 250, 0.25), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(244, 114, 182, 0.15), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 80%, rgba(251, 191, 36, 0.12), transparent),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 50%, #152a42 100%);
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+.app {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2.5rem;
+  min-height: 100dvh;
+}
+
+/* ─── Loading ─── */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.loading__mountain {
+  font-size: 3rem;
+  animation: float 2s ease-in-out infinite;
+}
+
+/* ─── Welcome ─── */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 2rem;
+  animation: fadeUp 0.8s ease-out;
+}
+
+.welcome__sparkles {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.welcome__eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 0.5rem;
+}
+
+.welcome__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 12vw, 4rem);
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, var(--gold-soft), var(--pink), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+.welcome__subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin: 0.75rem 0 1.5rem;
+  font-style: italic;
+}
+
+.welcome__card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.welcome__message {
+  margin: 0;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.welcome__footer {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.75rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--pink), #e879a9);
+  color: white;
+  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.4);
+}
+
+.btn--primary:hover:not(:disabled) {
+  box-shadow: 0 12px 32px rgba(244, 114, 182, 0.5);
+}
+
+.btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn--pulse {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.btn--sm {
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn--reset {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+/* ─── Header ─── */
+.header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+  animation: fadeUp 0.5s ease-out;
+}
+
+.header__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blue-glow);
+  margin: 0 0 0.25rem;
+}
+
+.header__name {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ─── Progress ─── */
+.progress {
+  margin-bottom: 1.5rem;
+}
+
+.progress__labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.progress__count {
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.progress__track {
+  height: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mint), var(--gold));
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Hunt Map ─── */
+.hunt-map {
+  margin-bottom: 1.5rem;
+}
+
+.hunt-map__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.hunt-map__trail {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.hunt-map__stop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.65rem 0.25rem;
+  background: var(--bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  transition: border-color 0.2s, transform 0.15s, background 0.2s;
+}
+
+.hunt-map__stop:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.hunt-map__stop--done {
+  border-color: rgba(52, 211, 153, 0.5);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.hunt-map__stop--current {
+  border-color: var(--gold);
+  background: rgba(251, 191, 36, 0.12);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.hunt-map__stop--locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hunt-map__stop--selected {
+  border-color: var(--pink);
+}
+
+.hunt-map__emoji {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.hunt-map__name {
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ─── Stop Card ─── */
+.stop-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  animation: fadeUp 0.4s ease-out;
+}
+
+.stop-card--done {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.08);
+}
+
+.stop-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.stop-card__number {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.stop-card__emoji {
+  font-size: 2rem;
+}
+
+.stop-card__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.stop-card__badge {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--mint);
+  font-weight: 600;
+}
+
+.stop-card__clue {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+  font-style: italic;
+  color: var(--text);
+}
+
+.stop-card__hint {
+  background: rgba(251, 191, 36, 0.12);
+  border-left: 3px solid var(--gold);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.stop-card__actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.stop-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.stop-card__label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.stop-card__input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.stop-card__input:focus {
+  border-color: var(--pink);
+}
+
+.stop-card__input::placeholder {
+  color: rgba(148, 163, 184, 0.6);
+}
+
+.stop-card__error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #fca5a5;
+}
+
+.stop-card__celebration {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--gold-soft);
+  margin: 0 0 1rem;
+}
+
+.stop-card__fun-fact {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.stop-card__fun-fact strong {
+  color: var(--blue-glow);
+}
+
+/* ─── Final Treasure ─── */
+.app--final {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.final-treasure {
+  position: relative;
+  text-align: center;
+  padding: 2rem 1rem;
+  animation: fadeUp 0.8s ease-out;
+}
+
+.final-treasure__glow {
+  position: absolute;
+  inset: -2rem;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.2), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.final-treasure__eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mint);
+  margin: 0 0 0.75rem;
+}
+
+.final-treasure__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, var(--gold-soft), var(--pink-soft));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.final-treasure__message {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  margin: 0 0 2rem;
+  max-width: 28rem;
+}
+
+.final-treasure__surprise {
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.2), rgba(251, 191, 36, 0.15));
+  border: 2px solid rgba(251, 191, 36, 0.4);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 0 40px rgba(251, 191, 36, 0.2);
+}
+
+.final-treasure__surprise p {
+  margin: 0.75rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.final-treasure__gift {
+  font-size: 3rem;
+  display: block;
+  animation: float 2s ease-in-out infinite;
+}
+
+.final-treasure__hearts {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 8px 24px rgba(244, 114, 182, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 40px rgba(244, 114, 182, 0.65);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.45);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (min-width: 480px) {
+  .hunt-map__trail {
+    gap: 0.65rem;
+  }
+
+  .hunt-map__stop {
+    padding: 0.85rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
