@@ -264,9 +264,16 @@ body {
   text-align: center;
 }
 
+.welcome__family {
+  font-size: 0.9rem;
+  color: var(--mint);
+  margin: -0.5rem 0 1.25rem;
+  font-weight: 500;
+}
+
 .hunt-map__trail {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
 }
 
@@ -378,6 +385,20 @@ body {
   margin: 0 0 1rem;
   font-style: italic;
   color: var(--text);
+}
+
+.stop-card__baby-tip {
+  background: rgba(52, 211, 153, 0.12);
+  border-left: 3px solid var(--mint);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.stop-card__baby-tip strong {
+  color: var(--mint);
 }
 
 .stop-card__hint {

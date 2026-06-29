@@ -65,6 +65,12 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
       <h3 className="stop-card__title">{stop.name}</h3>
       <p className="stop-card__clue">{stop.clue}</p>
 
+      {stop.babyTip && (
+        <p className="stop-card__baby-tip">
+          <strong>👶 Avec Émile:</strong> {stop.babyTip}
+        </p>
+      )}
+
       {showHint && (
         <p className="stop-card__hint">
           <strong>Indice:</strong> {stop.hint}

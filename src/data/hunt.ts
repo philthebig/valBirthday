@@ -4,148 +4,128 @@ export interface HuntStop {
   emoji: string;
   name: string;
   shortName: string;
-  /** Riddle or clue to find the location */
   clue: string;
-  /** Optional extra hint (costs nothing, just taps) */
   hint: string;
-  /** Fun fact shown after completion */
   funFact: string;
-  /** Answer(s) accepted — case-insensitive, accents ignored */
   answers: string[];
-  /** Approximate coords for "open in maps" link */
   lat: number;
   lng: number;
-  /** Celebration message on unlock */
   celebration: string;
+  /** Stroller / baby-friendly tip */
+  babyTip?: string;
 }
 
 export const huntStops: HuntStop[] = [
   {
-    id: 'village',
+    id: 'breakfast',
     order: 1,
+    emoji: '🥐',
+    name: 'Petit-déjeuner — Holiday Inn',
+    shortName: 'Déjeuner',
+    clue:
+      "Avant l'aventure, on se réchauffe le cœur : là où notre famille commence la journée, entre croissants, café et le sourire d'Émile… C'est ici que tout commence.",
+    hint: "Le restaurant du Holiday Inn Express — notre table de ce matin, juste à l'hôtel.",
+    funFact:
+      "Le Holiday Inn Express de Tremblant est au cœur du village piétonnier — parfait pour tout faire à pied avec bébé!",
+    answers: [
+      'holiday inn',
+      'hotel',
+      'hôtel',
+      'dejeuner',
+      'déjeuner',
+      'petit dejeuner',
+      'petit-déjeuner',
+      'breakfast',
+      'inn',
+    ],
+    lat: 46.1128,
+    lng: -74.5868,
+    celebration: 'Bonne journée, belle maman! Le petit-déjeuner en famille, c\'est déjà un trésor. 🥐',
+    babyTip: 'Installe-toi confortablement — pas de rush. Émile peut prendre son temps.',
+  },
+  {
+    id: 'village',
+    order: 2,
     emoji: '🏘️',
     name: 'Le Village Piétonnier',
     shortName: 'Village',
     clue:
-      "On commence doucement : là où les maisons portent des couleurs de bonbon et où l'on flâne sans voitures, entre boutiques et terrasses… Trouve le cœur coloré de Tremblant.",
-    hint: "Cherche la rue principale du village piétonnier, près de la fontaine et des bancs en bois.",
+      "Après le café, direction les couleurs! Là où les rues sont sans voitures, les maisons ressemblent à des bonbons et la poussette roule tout doucement…",
+    hint: "Sors de l'hôtel et explore les rues piétonnes colorées — tout est accessible à pied.",
     funFact:
-      "Le village piétonnier de Tremblant s'inspire des stations alpines européennes — on dirait un petit morceau des Alpes au Québec!",
-    answers: ['village', 'village piétonnier', 'pedestrian village', 'centre ville', 'centre-ville'],
-    lat: 46.1187,
-    lng: -74.5962,
-    celebration: 'Première étoile au firmament! Le village t\'appartient. ⭐',
+      "Le village piétonnier s'inspire des stations alpines européennes — un petit bout d'Europe au Québec!",
+    answers: ['village', 'village piétonnier', 'pedestrian village', 'centre ville', 'centre-ville', 'kandahar'],
+    lat: 46.1135,
+    lng: -74.5872,
+    celebration: 'Émile va adorer toutes ces couleurs! Première étoile débloquée. ⭐',
+    babyTip: 'Tout le village est piétonnier — idéal pour la poussette. Pause terrasse si besoin.',
   },
   {
     id: 'saint-bernard',
-    order: 2,
+    order: 3,
     emoji: '⏰',
     name: 'Place Saint-Bernard',
-    shortName: 'Saint-Bernard',
+    shortName: 'St-Bernard',
     clue:
-      "L'heure tourne, les montagnes veillent. Sur une place où l'on s'arrête pour regarder le ciel et le lac, un chien saint veille sur le temps qui passe…",
-    hint: "Une grande horloge, une statue de Saint-Bernard, et une vue sur le lac. Tu y es presque!",
+      "Une place pour faire une pause, regarder le lac et prendre une photo de famille. Un chien saint veille sur une grande horloge… et sur nous trois.",
+    hint: "La place centrale avec l'horloge et la statue de Saint-Bernard — vue magnifique sur le lac.",
     funFact:
-      "La Place Saint-Bernard est le point de rendez-vous classique des amoureux de Tremblant — parfait pour une photo!",
+      "La Place Saint-Bernard est LE spot photo de Tremblant — parfait pour un selfie famille!",
     answers: ['saint-bernard', 'saint bernard', 'place saint-bernard', 'place saint bernard', 'horloge'],
-    lat: 46.1195,
-    lng: -74.5955,
-    celebration: 'Tick-tock — tu es pile à l\'heure pour l\'aventure! ⏰',
-  },
-  {
-    id: 'lac',
-    order: 3,
-    emoji: '🌊',
-    name: 'Lac Tremblant',
-    shortName: 'Le Lac',
-    clue:
-      "Plus bleu qu'un ciel d'été, plus calme qu'un secret d'amoureux. Descends vers l'eau où les canots chuchotent et le sable accueille les pieds nus…",
-    hint: "La plage publique et le quai — là où le lac Tremblant brille sous le soleil.",
-    funFact:
-      "Le lac Tremblant s'étend sur 14 km et son nom vient de la forme de la montagne vue du ciel — comme un homme qui tremble!",
-    answers: ['lac', 'lac tremblant', 'plage', 'beach', 'lake', 'quai'],
-    lat: 46.1208,
-    lng: -74.5940,
-    celebration: 'Les vagues de bonheur montent! 🌊',
+    lat: 46.1142,
+    lng: -74.5865,
+    celebration: 'Clic! Un souvenir en famille sur la plus belle place. 📸',
+    babyTip: 'Bancs partout pour une pause si Émile a besoin — pas obligé de tout faire d\'un coup.',
   },
   {
     id: 'chocomotive',
     order: 4,
     emoji: '🍫',
     name: 'La Chocomotive',
-    shortName: 'Chocomotive',
+    shortName: 'Chocolat',
     clue:
-      "Un train de chocolat s'est arrêté en gare du plaisir. Là où le cacao sent bon et les vitrines font rêver les gourmands…",
-    hint: "Rue des Remparts — une boutique en forme de locomotive remplie de chocolat artisanal.",
+      "Une locomotive de chocolat s'est arrêtée en gare du bonheur. L'odeur du cacao guide les gourmands — grands et petits…",
+    hint: "Rue des Remparts — la boutique en forme de train, remplie de chocolat artisanal.",
     funFact:
-      "La Chocomotive est une institution tremblantoise — leur chocolat chaud en hiver, c'est une hug en tasse!",
+      "La Chocomotive est une institution — leur chocolat chaud est une câline en tasse, surtout en famille!",
     answers: ['chocomotive', 'chocolat', 'chocolate', 'locomotive'],
-    lat: 46.1182,
-    lng: -74.5970,
-    celebration: 'Délicieux! Tu mérites tout le chocolat du monde. 🍫',
+    lat: 46.1148,
+    lng: -74.5878,
+    celebration: 'Un petit chocolat pour la super maman? Tu l\'as mérité! 🍫',
+    babyTip: 'Arrêt gourmand facultatif — même regarder la vitrine depuis la poussette compte!',
   },
   {
-    id: 'casino',
+    id: 'lac',
     order: 5,
-    emoji: '🎰',
-    name: 'Casino de Mont-Tremblant',
-    shortName: 'Casino',
+    emoji: '🌊',
+    name: 'Le Lac Tremblant',
+    shortName: 'Le Lac',
     clue:
-      "Où la chance sourit et les lumières dansent au bord de l'eau. Un palais de verre et de miroirs attend les audacieux…",
-    hint: "Le bâtiment moderne au bord du lac, avec son architecture distinctive — le seul casino de la région des Laurentides.",
+      "Descends doucement vers l'eau bleue. Là où le lac scintille, les canards nagent et le vent sent bon les vacances en famille…",
+    hint: "La plage et le quai — quelques minutes à pied du village, chemin plat et accessible.",
     funFact:
-      "Le Casino de Mont-Tremblant offre une vue spectaculaire sur le lac — même sans jouer, la terrasse vaut le détour!",
-    answers: ['casino', 'casino de mont-tremblant', 'casino tremblant'],
-    lat: 46.1220,
-    lng: -74.5920,
-    celebration: 'Jackpot! Tu es la plus belle mise de ma vie. 🎰',
+      "Le lac Tremblant s'étend sur 14 km — son nom vient de la silhouette de la montagne vue du ciel.",
+    answers: ['lac', 'lac tremblant', 'plage', 'beach', 'lake', 'quai'],
+    lat: 46.1155,
+    lng: -74.5855,
+    celebration: 'L\'air du lac, en famille — rien de mieux. 🌊',
+    babyTip: 'Chemin accessible en poussette. Si Émile est fatigué, on peut sauter et revenir plus tard!',
   },
   {
-    id: 'cabriolet',
+    id: 'amano',
     order: 6,
-    emoji: '🚡',
-    name: 'Le Cabriolet',
-    shortName: 'Cabriolet',
+    emoji: '🍝',
+    name: 'A Mano Trattoria',
+    shortName: 'A Mano',
     clue:
-      "Sans roues mais avec des câbles, il t'élève vers les nuages. Monte là où le village du haut te fait la fête et la vue s'étire à perte de vue…",
-    hint: "Le téléphérique ouvert qui relie le village piétonnier au village du sommet — gratuit l'été!",
+      "Le trésor final se mange ce soir! Là où les pâtes sont fraîches, l'Italie est à Tremblant, et une table nous attend pour fêter la plus belle des mamans…",
+    hint: "116 Chemin de Kandahar — notre restaurant italien pour ce soir. Menu enfants pour Émile!",
     funFact:
-      "Le Cabriolet offre une vue à 360° sur les Laurentides — idéal pour un selfie de couple au sommet!",
-    answers: ['cabriolet', 'telepherique', 'téléphérique', 'gondola', 'sommet', 'lift'],
-    lat: 46.1175,
-    lng: -74.5985,
-    celebration: 'Tu voles haut, mon trésor! 🚡',
-  },
-  {
-    id: 'diable',
-    order: 7,
-    emoji: '🍺',
-    name: 'Microbrasserie La Diable',
-    shortName: 'La Diable',
-    clue:
-      "Un diable sympathique brasse la joie de vivre. Là où la bière coule et les rires résonnent entre poutres de bois et montagnes…",
-    hint: "La microbrasserie iconique de Tremblant — cherche le logo du diable rouge sur la rue principale.",
-    funFact:
-      "La Diable brasse des bières artisanales depuis 1997 — leur terrasse est l'endroit parfait pour trinquer!",
-    answers: ['diable', 'la diable', 'microbrasserie', 'brasserie', 'brewery'],
-    lat: 46.1190,
-    lng: -74.5968,
-    celebration: 'Santé à toi, reine de Tremblant! 🍺',
-  },
-  {
-    id: 'final',
-    order: 8,
-    emoji: '💝',
-    name: 'Le Trésor Final',
-    shortName: 'Trésor',
-    clue:
-      "Dernier indice, le plus précieux : retourne là où tout a commencé, là où les couleurs chantent et où je t'attends avec ce que mon cœur a préparé pour toi…",
-    hint: "Notre point de rendez-vous secret — tu le connais. Ou reviens à la Place Saint-Bernard au coucher du soleil.",
-    funFact:
-      "Le plus beau trésor de Tremblant, c'est l'aventure partagée — et tu viens de la vivre à fond!",
-    answers: ['treasure', 'tresor', 'trésor', 'amour', 'love', 'surprise', 'joyeux anniversaire', 'anniversaire'],
-    lat: 46.1195,
-    lng: -74.5955,
-    celebration: 'TU L\'AS FAIT! Le trésor est à toi! 💝🎉',
+      "A Mano prépare ses pâtes fraîches sur place et a un menu pour les enfants — parfait pour une soirée anniversaire en famille!",
+    answers: ['a mano', 'amano', 'mano', 'italien', 'italian', 'trattoria', 'pates', 'pâtes', 'diner', 'dîner'],
+    lat: 46.1132,
+    lng: -74.5870,
+    celebration: 'TU L\'AS FAIT! Joyeux 32e anniversaire, mon amour. Ce soir, c\'est pour toi! 💝🎉',
+    babyTip: 'Ce soir seulement — habille-toi à l\'aise, Émile aussi. On profite, sans stress.',
   },
 ];

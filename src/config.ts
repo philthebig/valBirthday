@@ -1,22 +1,19 @@
 /** Personalize the hunt here before the big day! */
 export const config = {
-  /** Your wife's name — shown throughout the adventure */
-  recipientName: 'Val',
+  recipientName: 'Valérie',
+  age: 32,
+  babyName: 'Émile',
 
-  /** Shown on the welcome screen */
-  birthdayMessage:
-    "Aujourd'hui, c'est ton jour — et Tremblant est notre terrain de jeu. Suis les indices, découvre nos trésors cachés, et laisse la magie des montagnes te guider… vers une surprise qui t'attend à la fin. 💛",
+  birthdayMessage: `Bonne fête Mon amour, cette année en plus de continuer de tomber de plus en plus amoureux de toi, je suis tombé amoureux de maman Val. Ce rôle ne te va pas seulement bien, tu démontres que c'était ton destin. Tu m'impressionnes chaque jour. Émile et moi sommes tellement chanceux de t'avoir — je ne crois pas que tu réalises à quel point. Je suis si fier de toi et chaque moment passé ensemble me donne encore plus hâte au prochain. Profite de cette journée pour t'aimer autant que je t'aime.`,
 
-  /** Final treasure message (revealed after last POI) */
   finalTreasure: {
     title: "Le vrai trésor, c'est toi.",
     message:
-      "Tu as parcouru tout Tremblant comme une exploratrice de légende. Chaque arrêt était une excuse de plus pour t'admirer. Maintenant… ouvre ce que j'ai préparé pour toi. Joyeux anniversaire, mon amour. 🎂✨",
-    /** Customize: dinner reservation, gift location, etc. */
-    surpriseHint: 'Rends-toi à notre table réservée — tu sais où. 🥂',
+      "Tu as parcouru Tremblant comme la super maman que tu es — avec Émile à nos côtés, à notre rythme, sans rien manquer. Chaque arrêt était une excuse de plus pour t'admirer. Maintenant, place à la soirée…",
+    surpriseHint: 'Ce soir : table réservée chez A Mano Trattoria. L\'Italie t\'attend, mon amour! 🍝🥂',
   },
 
-  /** Hunt title */
   huntTitle: 'Chasse au Trésor — Tremblant',
-  huntSubtitle: 'Une aventure rien que pour toi',
+  huntSubtitle: 'Une aventure en famille, à votre rythme — Valérie, Émile & toi',
+  familyTagline: '👶 Pensée pour les familles — pauses bienvenues, poussette OK!',
 };
