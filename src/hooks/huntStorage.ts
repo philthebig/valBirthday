@@ -1,5 +1,5 @@
 const STORAGE_KEY = 'tremblant-hunt-progress';
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.6.0';
 
 export { APP_VERSION };
 
