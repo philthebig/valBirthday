@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { config } from './config';
 import { huntStops } from './data/hunt';
 import { useHuntProgress } from './hooks/useHuntProgress';
-import { burstConfetti } from './utils/confetti';
 import { DiscoveredStops } from './components/DiscoveredStops';
-import { FinalTreasure } from './components/FinalTreasure';
+import { MemoryCollage } from './components/MemoryCollage';
+import { PhotoCapture } from './components/PhotoCapture';
 import { ProgressBar } from './components/ProgressBar';
 import { StopCard } from './components/StopCard';
 import { Welcome } from './components/Welcome';
@@ -14,15 +14,18 @@ export default function App() {
     completedIds,
     started,
     loaded,
+    treasureHuntPhotos,
+    awaitingPhotoId,
     startHunt,
-    completeStop,
+    setAwaitingPhoto,
+    savePhotoAndComplete,
     resetHunt,
     currentIndex,
     isComplete,
     progress,
   } = useHuntProgress(huntStops.length);
 
-  /** Current stop guessed but not yet continued to next riddle */
+  /** After photo confirmed — show destination reveal before next enigma */
   const [revealedId, setRevealedId] = useState<string | null>(null);
 
   if (!loaded) {
@@ -44,10 +47,17 @@ export default function App() {
     );
   }
 
-  if (isComplete && !revealedId) {
+  if (isComplete && !revealedId && !awaitingPhotoId) {
     return (
       <main className="app app--final">
-        <FinalTreasure />
+        <ProgressBar
+          progress={100}
+          current={huntStops.length}
+          total={huntStops.length}
+          label="Énigmes résolues"
+          full
+        />
+        <MemoryCollage stops={huntStops} photos={treasureHuntPhotos} />
         <button type="button" className="btn btn--ghost btn--reset" onClick={resetHunt}>
           Recommencer l'aventure
         </button>
@@ -56,16 +66,25 @@ export default function App() {
   }
 
   const activeStop = huntStops[currentIndex];
+  const photoStop = awaitingPhotoId ? huntStops.find((s) => s.id === awaitingPhotoId) : null;
   const revealedStop = revealedId ? huntStops.find((s) => s.id === revealedId) : null;
-  const displayStop = revealedStop ?? activeStop;
-  const isRevealed = revealedId === displayStop?.id;
+  const displayStop = revealedStop ?? photoStop ?? activeStop;
 
-  const completedStops = huntStops.filter((s) => completedIds.includes(s.id) && s.id !== revealedId);
+  const isPhotoPhase = awaitingPhotoId != null && awaitingPhotoId === displayStop?.id;
+  const isRevealed = revealedId != null && revealedId === displayStop?.id;
 
-  const handleReveal = (stop: (typeof huntStops)[number]) => {
-    completeStop(stop.id);
-    burstConfetti();
-    setRevealedId(stop.id);
+  const completedStops = huntStops.filter(
+    (s) => completedIds.includes(s.id) && s.id !== revealedId && s.id !== awaitingPhotoId,
+  );
+
+  const handleGuessCorrect = (stop: (typeof huntStops)[number]) => {
+    setAwaitingPhoto(stop.id);
+  };
+
+  const handlePhotoConfirm = (base64: string) => {
+    if (!displayStop || !isPhotoPhase) return;
+    savePhotoAndComplete(displayStop.id, displayStop.order, base64);
+    setRevealedId(displayStop.id);
   };
 
   const handleContinue = () => {
@@ -83,18 +102,30 @@ export default function App() {
         progress={progress}
         current={completedIds.length}
         total={huntStops.length}
-        label={isRevealed ? 'Destination dévoilée' : 'Énigmes résolues'}
+        label={
+          isPhotoPhase ? 'La Touche Souvenir 📸' : isRevealed ? 'Destination dévoilée' : 'Énigmes résolues'
+        }
       />
 
-      <DiscoveredStops completedStops={completedStops} total={huntStops.length} />
+      {!isPhotoPhase && <DiscoveredStops completedStops={completedStops} total={huntStops.length} />}
 
-      {displayStop && (
+      {displayStop && isPhotoPhase && (
+        <PhotoCapture
+          key={`photo-${displayStop.id}`}
+          enigmeNumber={displayStop.order}
+          instruction={displayStop.photoInstruction}
+          existingPreview={treasureHuntPhotos[displayStop.order]}
+          onConfirm={handlePhotoConfirm}
+        />
+      )}
+
+      {displayStop && !isPhotoPhase && (
         <StopCard
           key={`${displayStop.id}-${isRevealed ? 'revealed' : 'mystery'}`}
           stop={displayStop}
           totalStops={huntStops.length}
-          revealed={isRevealed}
-          onReveal={handleReveal}
+          phase={isRevealed ? 'revealed' : 'mystery'}
+          onGuessCorrect={handleGuessCorrect}
           onContinue={isRevealed ? handleContinue : undefined}
         />
       )}

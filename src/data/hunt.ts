@@ -14,6 +14,8 @@ export interface HuntStop {
   babyTip?: string;
   scheduledTime?: string;
   flexibleTime?: string;
+  /** La Touche Souvenir — instruction after riddle solved */
+  photoInstruction: string;
 }
 
 export const huntStops: HuntStop[] = [
@@ -53,6 +55,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.5868,
     celebration: 'Bonne journée, belle maman! Le petit-déjeuner en famille, c\'est déjà un trésor. 🥐',
     babyTip: 'Installe-toi confortablement — pas de rush. Émile peut prendre son temps avant le studio à 10h.',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, pour débloquer le trésor et l'énigme suivante, prends un selfie (ou une photo de vous trois, avec Émile et toi) à notre table du petit-déjeuner au Holiday Inn ! 📸",
   },
   {
     id: 'studio-creatif',
@@ -92,6 +96,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.5866,
     celebration: 'Picasso en famille! Votre création sera prête demain — un souvenir pour la vie. 🎨',
     babyTip: 'Activité calme et climatisée — idéal avec bébé. Choisis une pièce simple, prenez votre temps.',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, pour débloquer le trésor et l'énigme suivante, tu dois prendre un selfie (ou une photo de vous trois, avec Émile et toi) devant le Studio Créatif ! 📸",
   },
   {
     id: 'diner-choix',
@@ -149,6 +155,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.5872,
     celebration: 'Bon appétit, reine de la journée! Tu as choisi parfaitement. 🍽️',
     babyTip: 'Choisis un resto avec terrasse ou espace poussette — plusieurs options au village!',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, capture un moment à ton resto choisi — un selfie, votre plat, ou nous trois autour de la table ! 📸",
   },
   {
     id: 'chalets-drive',
@@ -197,6 +205,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.6100,
     celebration: 'Quelle vue! Les plus beaux chalets n\'ont rien sur notre petite famille. 🏡',
     babyTip: 'Parfait pendant la sieste d\'Émile en voiture. Pas besoin de sortir — admirez depuis l\'auto!',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, prends une photo depuis la voiture avec les grands chalets en arrière-plan — ou un selfie de nous trois en route ! 📸",
   },
   {
     id: 'activite-choix',
@@ -277,6 +287,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.5865,
     celebration: 'Tu l\'as mérité cette pause — profite à fond! ✨',
     babyTip: 'Aucune pression — même une promenade poussette au village compte. Émile inclus!',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, immortalise ton activité choisie — une photo de ce que tu as décidé de faire, avec Émile et moi si possible ! 📸",
   },
   {
     id: 'rocky-mountain',
@@ -323,6 +335,8 @@ export const huntStops: HuntStop[] = [
     lng: -74.5882,
     celebration: 'Douceur pour la plus douce des mamans! Tu mérites tout le chocolat du monde. 🍬',
     babyTip: 'Parfait pour une petite pause sucrée — pomme caramel à partager (ou pas!).',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, prends une photo devant Rocky Mountain Chocolate — avec ta pomme caramel, ou un selfie gourmand de nous trois ! 📸",
   },
   {
     id: 'amano',
@@ -372,5 +386,7 @@ export const huntStops: HuntStop[] = [
     lng: -74.5870,
     celebration: 'TU L\'AS FAIT! Joyeux 32e anniversaire, mon amour. Ce soir, c\'est pour toi! 💝🎉',
     babyTip: 'Ce soir seulement — habille-toi à l\'aise, Émile aussi. On profite, sans stress.',
+    photoInstruction:
+      "C'est l'heure du souvenir ! Valérie, pour ton dernier trésor, une photo de nous trois chez A Mano — notre souper d'anniversaire en famille ! 📸",
   },
 ];

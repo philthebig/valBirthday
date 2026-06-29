@@ -1,68 +1,99 @@
 import { useCallback, useEffect, useState } from 'react';
-
-const STORAGE_KEY = 'tremblant-hunt-progress';
+import {
+  loadHuntStorage,
+  saveHuntStorage,
+  type HuntStorage,
+  type TreasureHuntPhotos,
+} from './huntStorage';
 
 export function useHuntProgress(totalStops: number) {
-  const [completedIds, setCompletedIds] = useState<string[]>([]);
-  const [started, setStarted] = useState(false);
+  const [storage, setStorage] = useState<HuntStorage | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const data = JSON.parse(raw) as { completedIds: string[]; started: boolean };
-        setCompletedIds(data.completedIds ?? []);
-        setStarted(data.started ?? false);
-      }
-    } catch {
-      /* ignore corrupt storage */
-    }
+    setStorage(loadHuntStorage(totalStops));
     setLoaded(true);
-  }, []);
+  }, [totalStops]);
 
-  const persist = useCallback((ids: string[], hasStarted: boolean) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ completedIds: ids, started: hasStarted }));
-  }, []);
-
-  const startHunt = useCallback(() => {
-    setStarted(true);
-    persist(completedIds, true);
-  }, [completedIds, persist]);
-
-  const completeStop = useCallback(
-    (id: string) => {
-      setCompletedIds((prev) => {
-        if (prev.includes(id)) return prev;
-        const next = [...prev, id];
-        persist(next, true);
-        return next;
-      });
+  const persist = useCallback(
+    (next: HuntStorage) => {
+      setStorage(next);
+      saveHuntStorage(next);
     },
-    [persist],
+    [],
   );
 
+  const startHunt = useCallback(() => {
+    if (!storage) return;
+    persist({ ...storage, started: true });
+  }, [storage, persist]);
+
+  const setAwaitingPhoto = useCallback(
+    (stopId: string) => {
+      if (!storage) return;
+      persist({ ...storage, awaitingPhotoId: stopId });
+    },
+    [storage, persist],
+  );
+
+  const savePhotoAndComplete = useCallback(
+    (stopId: string, order: number, base64: string) => {
+      if (!storage) return;
+      const photos: TreasureHuntPhotos = {
+        ...storage.treasureHuntPhotos,
+        [order]: base64,
+      };
+      const completedIds = storage.completedIds.includes(stopId)
+        ? storage.completedIds
+        : [...storage.completedIds, stopId];
+      persist({
+        ...storage,
+        completedIds,
+        treasureHuntPhotos: photos,
+        awaitingPhotoId: null,
+      });
+    },
+    [storage, persist],
+  );
+
+  const clearAwaitingPhoto = useCallback(() => {
+    if (!storage) return;
+    persist({ ...storage, awaitingPhotoId: null });
+  }, [storage, persist]);
+
   const resetHunt = useCallback(() => {
-    setCompletedIds([]);
-    setStarted(false);
-    localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    localStorage.removeItem('tremblant-hunt-progress');
+    setStorage(loadHuntStorage(totalStops));
+  }, [totalStops]);
+
+  const completedIds = storage?.completedIds ?? [];
+  const started = storage?.started ?? false;
+  const treasureHuntPhotos = storage?.treasureHuntPhotos ?? {};
+  const awaitingPhotoId = storage?.awaitingPhotoId ?? null;
 
   const currentIndex = completedIds.length;
-  const isComplete = completedIds.length >= totalStops;
+  const allPhotosTaken =
+    totalStops > 0 &&
+    Array.from({ length: totalStops }, (_, i) => i + 1).every(
+      (n) => treasureHuntPhotos[n] != null && treasureHuntPhotos[n] !== '',
+    );
+  const isComplete = completedIds.length >= totalStops && allPhotosTaken;
   const progress = totalStops > 0 ? (completedIds.length / totalStops) * 100 : 0;
 
   return {
     completedIds,
     started,
     loaded,
+    treasureHuntPhotos,
+    awaitingPhotoId,
     startHunt,
-    completeStop,
+    setAwaitingPhoto,
+    savePhotoAndComplete,
+    clearAwaitingPhoto,
     resetHunt,
     currentIndex,
     isComplete,
     progress,
-    isStopUnlocked: (order: number) => order <= completedIds.length + 1,
     isStopCompleted: (id: string) => completedIds.includes(id),
   };
 }

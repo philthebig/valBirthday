@@ -5,12 +5,12 @@ import { matchesAnswer } from '../utils/normalize';
 interface StopCardProps {
   stop: HuntStop;
   totalStops: number;
-  revealed: boolean;
-  onReveal: (stop: HuntStop) => void;
+  phase: 'mystery' | 'revealed';
+  onGuessCorrect: (stop: HuntStop) => void;
   onContinue?: () => void;
 }
 
-export function StopCard({ stop, totalStops, revealed, onReveal, onContinue }: StopCardProps) {
+export function StopCard({ stop, totalStops, phase, onGuessCorrect, onContinue }: StopCardProps) {
   const [answer, setAnswer] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [error, setError] = useState('');
@@ -21,13 +21,13 @@ export function StopCard({ stop, totalStops, revealed, onReveal, onContinue }: S
     e.preventDefault();
     if (matchesAnswer(answer, stop.answers)) {
       setError('');
-      onReveal(stop);
+      onGuessCorrect(stop);
     } else {
       setError('Pas tout à fait… réfléchis encore un peu! 🤔');
     }
   };
 
-  if (revealed) {
+  if (phase === 'revealed') {
     return (
       <div className="stop-card stop-card--revealed">
         <p className="stop-card__reveal-eyebrow">✨ C'est parti pour…</p>
@@ -65,7 +65,7 @@ export function StopCard({ stop, totalStops, revealed, onReveal, onContinue }: S
         </a>
         {onContinue && (
           <button type="button" className="btn btn--primary" onClick={onContinue} style={{ width: '100%' }}>
-            {stop.order < totalStops ? 'Prochaine énigme →' : 'Voir le trésor final →'}
+            {stop.order < totalStops ? 'Prochaine énigme →' : 'Voir l\'album souvenir →'}
           </button>
         )}
       </div>
