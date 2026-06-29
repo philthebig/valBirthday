@@ -449,6 +449,37 @@ body {
   width: 100%;
 }
 
+.memory-collage__save-pdf {
+  width: 100%;
+  margin-top: 0.65rem;
+}
+
+.memory-collage__status {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--mint);
+  margin: 0.75rem 0 0;
+}
+
+.memory-collage__preview-wrap {
+  margin: 1.25rem 0;
+  text-align: center;
+}
+
+.memory-collage__preview-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.memory-collage__preview {
+  width: 100%;
+  max-width: 280px;
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(251, 191, 36, 0.35);
+  box-shadow: var(--shadow);
+}
+
 .memory-collage__missing {
   text-align: center;
   font-size: 0.85rem;
