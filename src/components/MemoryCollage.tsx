@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { config } from '../config';
 import type { HuntStop } from '../data/hunt';
 import { getPhoto, type PhotoMap } from '../utils/photoStorage';
-import { shareOrDownloadImage } from '../utils/downloadAlbum';
+import { downloadPdfFromCanvas, shareOrDownloadImage } from '../utils/downloadAlbum';
 import { canvasToJpegBlob, generateAlbumImage } from '../utils/generateAlbumImage';
 import { goldBurst } from '../utils/confetti';
 import { useEffect } from 'react';
