@@ -1,12 +1,12 @@
 import { config } from '../config';
 import type { HuntStop } from '../data/hunt';
-import { getPhoto, type TreasureHuntPhotos } from '../hooks/huntStorage';
+import { getPhoto, type PhotoMap } from '../utils/photoStorage';
 import { goldBurst } from '../utils/confetti';
 import { useEffect } from 'react';
 
 interface MemoryCollageProps {
   stops: HuntStop[];
-  photos: TreasureHuntPhotos;
+  photos: PhotoMap;
   onSaveAlbum?: () => void;
 }
 
@@ -39,8 +39,8 @@ export function MemoryCollage({ stops, photos, onSaveAlbum }: MemoryCollageProps
 
       {missingCount > 0 && (
         <p className="memory-collage__missing" role="status">
-          {missingCount} photo{missingCount > 1 ? 's' : ''} manquante{missingCount > 1 ? 's' : ''} — réinitialise
-          pour refaire la chasse avec les souvenirs.
+          {missingCount} photo{missingCount > 1 ? 's' : ''} manquante{missingCount > 1 ? 's' : ''}.
+          Réinitialise la progression pour recommencer avec les souvenirs.
         </p>
       )}
 

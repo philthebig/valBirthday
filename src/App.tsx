@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { config } from './config';
 import { huntStops } from './data/hunt';
+import { APP_VERSION } from './hooks/huntStorage';
 import { useHuntProgress } from './hooks/useHuntProgress';
 import { DiscoveredStops } from './components/DiscoveredStops';
 import { MemoryCollage } from './components/MemoryCollage';
@@ -17,12 +18,14 @@ export default function App() {
     loaded,
     treasureHuntPhotos,
     awaitingPhotoId,
+    showAlbumFlag,
     startHunt,
     setAwaitingPhoto,
     savePhotoAndComplete,
+    openAlbum,
     resetHunt,
+    refreshPhotos,
     currentIndex,
-    isComplete,
     allRiddlesSolved,
     photoCount,
     progress,
@@ -30,10 +33,17 @@ export default function App() {
 
   const [revealedId, setRevealedId] = useState<string | null>(null);
 
-  const handleReset = () => {
-    resetHunt();
+  const handleReset = async () => {
+    await resetHunt();
     setRevealedId(null);
   };
+
+  // Refresh photos when opening album
+  useEffect(() => {
+    if (showAlbumFlag || allRiddlesSolved) {
+      refreshPhotos();
+    }
+  }, [showAlbumFlag, allRiddlesSolved, refreshPhotos]);
 
   if (!loaded) {
     return (
@@ -50,15 +60,14 @@ export default function App() {
     return (
       <main className="app">
         <Welcome onStart={startHunt} />
-        <ResetProgressButton onReset={handleReset} />
+        <ResetProgressButton onReset={handleReset} variant="prominent" />
+        <p className="app-version">v{APP_VERSION}</p>
       </main>
     );
   }
 
   const showAlbum =
-    (isComplete || (allRiddlesSolved && !awaitingPhotoId && !revealedId)) &&
-    !awaitingPhotoId &&
-    !revealedId;
+    (showAlbumFlag || allRiddlesSolved) && !awaitingPhotoId && !revealedId;
 
   if (showAlbum) {
     return (
@@ -71,7 +80,8 @@ export default function App() {
           full
         />
         <MemoryCollage stops={huntStops} photos={treasureHuntPhotos} />
-        <ResetProgressButton onReset={handleReset} />
+        <ResetProgressButton onReset={handleReset} variant="prominent" />
+        <p className="app-version">v{APP_VERSION}</p>
       </main>
     );
   }
@@ -92,15 +102,18 @@ export default function App() {
     setAwaitingPhoto(stop.id);
   };
 
-  const handlePhotoConfirm = (base64: string): boolean => {
+  const handlePhotoConfirm = async (base64: string): Promise<boolean> => {
     if (!displayStop || !isPhotoPhase) return false;
-    const ok = savePhotoAndComplete(displayStop.id, displayStop.order, base64);
+    const ok = await savePhotoAndComplete(displayStop.id, displayStop.order, base64);
     if (ok) setRevealedId(displayStop.id);
     return ok;
   };
 
   const handleContinue = () => {
     setRevealedId(null);
+    if (completedIds.length >= huntStops.length) {
+      openAlbum();
+    }
   };
 
   return (
@@ -124,7 +137,22 @@ export default function App() {
         }
       />
 
-      {!isPhotoPhase && <DiscoveredStops completedStops={completedStops} total={huntStops.length} />}
+      {!isPhotoPhase && !allRiddlesSolved && (
+        <DiscoveredStops completedStops={completedStops} total={huntStops.length} />
+      )}
+
+      {allRiddlesSolved && !isPhotoPhase && !isRevealed && (
+        <div className="stuck-card">
+          <p className="stuck-card__title">Chasse terminée! 🎉</p>
+          <p className="stuck-card__text">
+            {photoCount}/{huntStops.length} souvenirs capturés
+          </p>
+          <button type="button" className="btn btn--primary" onClick={openAlbum}>
+            Voir l&apos;album souvenir →
+          </button>
+          <ResetProgressButton onReset={handleReset} variant="prominent" />
+        </div>
+      )}
 
       {displayStop && isPhotoPhase && (
         <PhotoCapture
@@ -136,7 +164,7 @@ export default function App() {
         />
       )}
 
-      {displayStop && !isPhotoPhase && (
+      {displayStop && !isPhotoPhase && (isRevealed || !allRiddlesSolved) && (
         <StopCard
           key={`${displayStop.id}-${isRevealed ? 'revealed' : 'mystery'}`}
           stop={displayStop}
@@ -147,14 +175,7 @@ export default function App() {
         />
       )}
 
-      {!displayStop && allRiddlesSolved && (
-        <div className="stuck-card">
-          <p>Chasse terminée — affichage de l&apos;album souvenir…</p>
-          <button type="button" className="btn btn--primary" onClick={() => setRevealedId(null)}>
-            Voir l&apos;album →
-          </button>
-        </div>
-      )}
+      <p className="app-version">v{APP_VERSION}</p>
     </main>
   );
 }

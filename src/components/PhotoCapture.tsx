@@ -6,7 +6,7 @@ interface PhotoCaptureProps {
   enigmeNumber: number;
   instruction: string;
   existingPreview?: string | null;
-  onConfirm: (base64: string) => boolean;
+  onConfirm: (base64: string) => Promise<boolean>;
 }
 
 export function PhotoCapture({
@@ -41,11 +41,14 @@ export function PhotoCapture({
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!preview) return;
-    const ok = onConfirm(preview);
+    setLoading(true);
+    setError('');
+    const ok = await onConfirm(preview);
+    setLoading(false);
     if (!ok) {
-      setError('Impossible de sauvegarder la photo (mémoire pleine?). Réessaie ou réinitialise.');
+      setError('Impossible de sauvegarder la photo. Réessaie ou réinitialise la progression.');
     }
   };
 
@@ -99,7 +102,7 @@ export function PhotoCapture({
         disabled={!preview || loading}
         onClick={handleConfirm}
       >
-        Confirmer la Photo & Débloquer Trésor Suivant →
+        {loading ? 'Sauvegarde…' : 'Confirmer la Photo & Débloquer Trésor Suivant →'}
       </button>
     </div>
   );

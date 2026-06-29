@@ -1,47 +1,22 @@
 const STORAGE_KEY = 'tremblant-hunt-progress';
-const PHOTO_PREFIX = 'tremblant-hunt-photo-';
+const APP_VERSION = '1.4.0';
 
-export type TreasureHuntPhotos = Record<number, string | null>;
+export { APP_VERSION };
 
 export interface HuntStorage {
   completedIds: string[];
   started: boolean;
   awaitingPhotoId: string | null;
+  /** Set when user finishes last stop — forces album view */
+  showAlbum?: boolean;
 }
 
 const emptyStorage = (): HuntStorage => ({
   completedIds: [],
   started: false,
   awaitingPhotoId: null,
+  showAlbum: false,
 });
-
-/** Photos stored separately — avoids bloating the main JSON blob */
-export function savePhoto(order: number, base64: string): boolean {
-  try {
-    localStorage.setItem(`${PHOTO_PREFIX}${order}`, base64);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export function loadPhoto(order: number): string | null {
-  return localStorage.getItem(`${PHOTO_PREFIX}${order}`);
-}
-
-export function loadAllPhotos(total: number): TreasureHuntPhotos {
-  const photos: TreasureHuntPhotos = {};
-  for (let i = 1; i <= total; i++) {
-    photos[i] = loadPhoto(i);
-  }
-  return photos;
-}
-
-export function clearAllPhotos(total: number) {
-  for (let i = 1; i <= total; i++) {
-    localStorage.removeItem(`${PHOTO_PREFIX}${i}`);
-  }
-}
 
 /** Migrate photos embedded in old monolithic storage */
 function migrateLegacyPhotos(raw: Record<string, unknown>, total: number) {
@@ -49,8 +24,12 @@ function migrateLegacyPhotos(raw: Record<string, unknown>, total: number) {
   if (!legacy) return;
   for (let i = 1; i <= total; i++) {
     const src = legacy[i] ?? legacy[String(i)];
-    if (src && !loadPhoto(i)) {
-      savePhoto(i, src);
+    if (src) {
+      try {
+        localStorage.setItem(`tremblant-hunt-photo-${i}`, src);
+      } catch {
+        /* ignore */
+      }
     }
   }
 }
@@ -61,25 +40,31 @@ export function loadHuntStorage(total: number): HuntStorage {
     if (!raw) return emptyStorage();
     const data = JSON.parse(raw) as Partial<HuntStorage> & Record<string, unknown>;
     migrateLegacyPhotos(data, total);
+
+    const completedIds = data.completedIds ?? [];
+    let awaitingPhotoId = data.awaitingPhotoId ?? null;
+
+    // Stuck state fix: if all done, clear pending photo flag
+    if (completedIds.length >= total) {
+      awaitingPhotoId = null;
+    }
+
     return {
-      completedIds: data.completedIds ?? [],
+      completedIds,
       started: data.started ?? false,
-      awaitingPhotoId: data.awaitingPhotoId ?? null,
+      awaitingPhotoId,
+      showAlbum: data.showAlbum ?? completedIds.length >= total,
     };
   } catch {
     return emptyStorage();
   }
 }
 
-export function saveHuntStorage(data: HuntStorage) {
+export function saveHuntStorage(data: HuntStorage): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     return true;
   } catch {
     return false;
   }
-}
-
-export function getPhoto(photos: TreasureHuntPhotos, order: number): string | null {
-  return photos[order] ?? photos[Number(order)] ?? loadPhoto(order);
 }
