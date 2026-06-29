@@ -4,7 +4,7 @@ export const config = {
   age: 32,
   babyName: 'Émile',
 
-  birthdayMessage: `Bonne fête Mon amour, cette année en plus de continuer de tomber de plus en plus amoureux de toi, je suis tombé amoureux de maman Val. Ce rôle ne te va pas seulement bien, tu démontres que c'était ton destin. Tu m'impressionnes chaque jour. Émile et moi sommes tellement chanceux de t'avoir — je ne crois pas que tu réalises à quel point. Je suis si fier de toi et chaque moment passé ensemble me donne encore plus hâte au prochain. Profite de cette journée pour t'aimer autant que je t'aime.`,
+  birthdayMessage: `Bonne fête Mon amour, cette année en plus de continuer de tomber de plus en plus amoureux de toi, je suis tombé amoureux de maman Val. Ce rôle ne te va pas seulement bien, tu démontre que c'était ton destin. Tu m'impressionnes chaque jour. Émile et moi sommes tellement chanceux de t'avoir je ne crois pas que tu réalises à quel point. Je suis si fier de toi et chaque moment passé ensemble me donne encore plus hâte au prochain. Profites de cette journée pour t'aimer autant que je t'aime.`,
 
   finalTreasure: {
     title: "Le vrai trésor, c'est toi.",
