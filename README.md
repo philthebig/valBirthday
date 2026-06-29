@@ -24,7 +24,7 @@ npm run dev
 | 1 | Petit-déjeuner — Holiday Inn | `holiday inn`, `déjeuner` |
 | 2 | Village piétonnier | `village` |
 | 3 | Place Saint-Bernard | `saint-bernard`, `horloge` |
-| 4 | La Chocomotive | `chocomotive`, `chocolat` |
+| 6 | Rocky Mountain Chocolate | `rocky mountain`, `chocolat`, `fudge` |
 | 5 | Lac Tremblant | `lac`, `plage` |
 | 6 | A Mano Trattoria | `a mano`, `italien` |
 
