@@ -1,6 +1,6 @@
 import { config } from '../config';
 import type { HuntStop } from '../data/hunt';
-import type { TreasureHuntPhotos } from '../hooks/huntStorage';
+import { getPhoto, type TreasureHuntPhotos } from '../hooks/huntStorage';
 import { goldBurst } from '../utils/confetti';
 import { useEffect } from 'react';
 
@@ -16,6 +16,8 @@ export function MemoryCollage({ stops, photos, onSaveAlbum }: MemoryCollageProps
     const t = setTimeout(goldBurst, 800);
     return () => clearTimeout(t);
   }, []);
+
+  const missingCount = stops.filter((s) => !getPhoto(photos, s.order)).length;
 
   const handleSave = () => {
     if (onSaveAlbum) {
@@ -35,9 +37,16 @@ export function MemoryCollage({ stops, photos, onSaveAlbum }: MemoryCollageProps
         <p className="memory-collage__subtitle">Pour {config.recipientName} 💛</p>
       </header>
 
+      {missingCount > 0 && (
+        <p className="memory-collage__missing" role="status">
+          {missingCount} photo{missingCount > 1 ? 's' : ''} manquante{missingCount > 1 ? 's' : ''} — réinitialise
+          pour refaire la chasse avec les souvenirs.
+        </p>
+      )}
+
       <div className="memory-collage__grid">
         {stops.map((stop) => {
-          const src = photos[stop.order];
+          const src = getPhoto(photos, stop.order);
           return (
             <figure key={stop.id} className="memory-collage__item">
               <div className="memory-collage__frame">
@@ -48,7 +57,7 @@ export function MemoryCollage({ stops, photos, onSaveAlbum }: MemoryCollageProps
                 )}
               </div>
               <figcaption className="memory-collage__caption">
-                Stop {stop.order}: {stop.shortName}
+                Stop {stop.order}: {stop.name}
               </figcaption>
             </figure>
           );

@@ -6,7 +6,7 @@ interface PhotoCaptureProps {
   enigmeNumber: number;
   instruction: string;
   existingPreview?: string | null;
-  onConfirm: (base64: string) => void;
+  onConfirm: (base64: string) => boolean;
 }
 
 export function PhotoCapture({
@@ -41,6 +41,14 @@ export function PhotoCapture({
     }
   };
 
+  const handleConfirm = () => {
+    if (!preview) return;
+    const ok = onConfirm(preview);
+    if (!ok) {
+      setError('Impossible de sauvegarder la photo (mémoire pleine?). Réessaie ou réinitialise.');
+    }
+  };
+
   return (
     <div className="stop-card stop-card--photo">
       <p className="stop-card__mystery-label">Énigme {enigmeNumber}</p>
@@ -53,7 +61,7 @@ export function PhotoCapture({
           ref={inputRef}
           type="file"
           accept="image/*"
-          capture="environment"
+          capture="user"
           className="photo-upload__input"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
@@ -89,7 +97,7 @@ export function PhotoCapture({
         className="btn btn--primary"
         style={{ width: '100%', marginTop: '1rem' }}
         disabled={!preview || loading}
-        onClick={() => preview && onConfirm(preview)}
+        onClick={handleConfirm}
       >
         Confirmer la Photo & Débloquer Trésor Suivant →
       </button>

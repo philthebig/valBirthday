@@ -6,6 +6,7 @@ import { DiscoveredStops } from './components/DiscoveredStops';
 import { MemoryCollage } from './components/MemoryCollage';
 import { PhotoCapture } from './components/PhotoCapture';
 import { ProgressBar } from './components/ProgressBar';
+import { ResetProgressButton } from './components/ResetProgressButton';
 import { StopCard } from './components/StopCard';
 import { Welcome } from './components/Welcome';
 
@@ -22,11 +23,17 @@ export default function App() {
     resetHunt,
     currentIndex,
     isComplete,
+    allRiddlesSolved,
+    photoCount,
     progress,
   } = useHuntProgress(huntStops.length);
 
-  /** After photo confirmed — show destination reveal before next enigma */
   const [revealedId, setRevealedId] = useState<string | null>(null);
+
+  const handleReset = () => {
+    resetHunt();
+    setRevealedId(null);
+  };
 
   if (!loaded) {
     return (
@@ -43,24 +50,28 @@ export default function App() {
     return (
       <main className="app">
         <Welcome onStart={startHunt} />
+        <ResetProgressButton onReset={handleReset} />
       </main>
     );
   }
 
-  if (isComplete && !revealedId && !awaitingPhotoId) {
+  const showAlbum =
+    (isComplete || (allRiddlesSolved && !awaitingPhotoId && !revealedId)) &&
+    !awaitingPhotoId &&
+    !revealedId;
+
+  if (showAlbum) {
     return (
       <main className="app app--final">
         <ProgressBar
           progress={100}
           current={huntStops.length}
           total={huntStops.length}
-          label="Énigmes résolues"
+          label={`Souvenirs ${photoCount}/${huntStops.length}`}
           full
         />
         <MemoryCollage stops={huntStops} photos={treasureHuntPhotos} />
-        <button type="button" className="btn btn--ghost btn--reset" onClick={resetHunt}>
-          Recommencer l'aventure
-        </button>
+        <ResetProgressButton onReset={handleReset} />
       </main>
     );
   }
@@ -81,10 +92,11 @@ export default function App() {
     setAwaitingPhoto(stop.id);
   };
 
-  const handlePhotoConfirm = (base64: string) => {
-    if (!displayStop || !isPhotoPhase) return;
-    savePhotoAndComplete(displayStop.id, displayStop.order, base64);
-    setRevealedId(displayStop.id);
+  const handlePhotoConfirm = (base64: string): boolean => {
+    if (!displayStop || !isPhotoPhase) return false;
+    const ok = savePhotoAndComplete(displayStop.id, displayStop.order, base64);
+    if (ok) setRevealedId(displayStop.id);
+    return ok;
   };
 
   const handleContinue = () => {
@@ -96,6 +108,7 @@ export default function App() {
       <header className="header">
         <p className="header__eyebrow">{config.huntTitle}</p>
         <h1 className="header__name">Pour {config.recipientName} 💛</h1>
+        <ResetProgressButton onReset={handleReset} variant="inline" />
       </header>
 
       <ProgressBar
@@ -103,7 +116,11 @@ export default function App() {
         current={completedIds.length}
         total={huntStops.length}
         label={
-          isPhotoPhase ? 'La Touche Souvenir 📸' : isRevealed ? 'Destination dévoilée' : 'Énigmes résolues'
+          isPhotoPhase
+            ? 'La Touche Souvenir 📸'
+            : isRevealed
+              ? 'Destination dévoilée'
+              : 'Énigmes résolues'
         }
       />
 
@@ -128,6 +145,15 @@ export default function App() {
           onGuessCorrect={handleGuessCorrect}
           onContinue={isRevealed ? handleContinue : undefined}
         />
+      )}
+
+      {!displayStop && allRiddlesSolved && (
+        <div className="stuck-card">
+          <p>Chasse terminée — affichage de l&apos;album souvenir…</p>
+          <button type="button" className="btn btn--primary" onClick={() => setRevealedId(null)}>
+            Voir l&apos;album →
+          </button>
+        </div>
       )}
     </main>
   );

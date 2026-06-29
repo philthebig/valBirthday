@@ -1,98 +1,97 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
+  clearAllPhotos,
+  loadAllPhotos,
   loadHuntStorage,
   saveHuntStorage,
+  savePhoto,
   type HuntStorage,
   type TreasureHuntPhotos,
 } from './huntStorage';
 
 export function useHuntProgress(totalStops: number) {
   const [storage, setStorage] = useState<HuntStorage | null>(null);
+  const [photos, setPhotos] = useState<TreasureHuntPhotos>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setStorage(loadHuntStorage(totalStops));
+    setPhotos(loadAllPhotos(totalStops));
     setLoaded(true);
   }, [totalStops]);
 
-  const persist = useCallback(
-    (next: HuntStorage) => {
-      setStorage(next);
+  const updateStorage = useCallback((updater: (prev: HuntStorage) => HuntStorage) => {
+    setStorage((prev) => {
+      if (!prev) return prev;
+      const next = updater(prev);
       saveHuntStorage(next);
-    },
-    [],
-  );
+      return next;
+    });
+  }, []);
 
   const startHunt = useCallback(() => {
-    if (!storage) return;
-    persist({ ...storage, started: true });
-  }, [storage, persist]);
+    updateStorage((prev) => ({ ...prev, started: true }));
+  }, [updateStorage]);
 
   const setAwaitingPhoto = useCallback(
     (stopId: string) => {
-      if (!storage) return;
-      persist({ ...storage, awaitingPhotoId: stopId });
+      updateStorage((prev) => ({ ...prev, awaitingPhotoId: stopId }));
     },
-    [storage, persist],
+    [updateStorage],
   );
 
   const savePhotoAndComplete = useCallback(
-    (stopId: string, order: number, base64: string) => {
-      if (!storage) return;
-      const photos: TreasureHuntPhotos = {
-        ...storage.treasureHuntPhotos,
-        [order]: base64,
-      };
-      const completedIds = storage.completedIds.includes(stopId)
-        ? storage.completedIds
-        : [...storage.completedIds, stopId];
-      persist({
-        ...storage,
-        completedIds,
-        treasureHuntPhotos: photos,
-        awaitingPhotoId: null,
-      });
-    },
-    [storage, persist],
-  );
+    (stopId: string, order: number, base64: string): boolean => {
+      const saved = savePhoto(order, base64);
+      if (!saved) return false;
 
-  const clearAwaitingPhoto = useCallback(() => {
-    if (!storage) return;
-    persist({ ...storage, awaitingPhotoId: null });
-  }, [storage, persist]);
+      updateStorage((prev) => ({
+        ...prev,
+        completedIds: prev.completedIds.includes(stopId)
+          ? prev.completedIds
+          : [...prev.completedIds, stopId],
+        awaitingPhotoId: null,
+      }));
+      setPhotos(loadAllPhotos(totalStops));
+      return true;
+    },
+    [totalStops, updateStorage],
+  );
 
   const resetHunt = useCallback(() => {
     localStorage.removeItem('tremblant-hunt-progress');
+    clearAllPhotos(totalStops);
     setStorage(loadHuntStorage(totalStops));
+    setPhotos(loadAllPhotos(totalStops));
   }, [totalStops]);
 
   const completedIds = storage?.completedIds ?? [];
   const started = storage?.started ?? false;
-  const treasureHuntPhotos = storage?.treasureHuntPhotos ?? {};
   const awaitingPhotoId = storage?.awaitingPhotoId ?? null;
 
   const currentIndex = completedIds.length;
-  const allPhotosTaken =
-    totalStops > 0 &&
-    Array.from({ length: totalStops }, (_, i) => i + 1).every(
-      (n) => treasureHuntPhotos[n] != null && treasureHuntPhotos[n] !== '',
-    );
-  const isComplete = completedIds.length >= totalStops && allPhotosTaken;
+  const photoCount = Array.from({ length: totalStops }, (_, i) => i + 1).filter(
+    (n) => photos[n] != null && photos[n] !== '',
+  ).length;
+  const allPhotosTaken = photoCount >= totalStops;
+  const allRiddlesSolved = completedIds.length >= totalStops;
+  const isComplete = allRiddlesSolved && allPhotosTaken;
   const progress = totalStops > 0 ? (completedIds.length / totalStops) * 100 : 0;
 
   return {
     completedIds,
     started,
     loaded,
-    treasureHuntPhotos,
+    treasureHuntPhotos: photos,
     awaitingPhotoId,
     startHunt,
     setAwaitingPhoto,
     savePhotoAndComplete,
-    clearAwaitingPhoto,
     resetHunt,
     currentIndex,
     isComplete,
+    allRiddlesSolved,
+    photoCount,
     progress,
     isStopCompleted: (id: string) => completedIds.includes(id),
   };

@@ -1,5 +1,5 @@
-/** Resize image and return base64 data URL for localStorage */
-export function fileToBase64(file: File, maxWidth = 800): Promise<string> {
+/** Resize image and return base64 data URL — kept small for localStorage */
+export function fileToBase64(file: File, maxWidth = 560): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Lecture du fichier impossible'));
@@ -19,7 +19,7 @@ export function fileToBase64(file: File, maxWidth = 800): Promise<string> {
           return;
         }
         ctx.drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.82));
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
       };
       img.src = reader.result as string;
     };

@@ -449,6 +449,39 @@ body {
   width: 100%;
 }
 
+.memory-collage__missing {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  background: rgba(252, 165, 165, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.reset-inline {
+  display: inline-block;
+  margin-top: 0.35rem;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.reset-inline:hover {
+  color: var(--text);
+}
+
+.stuck-card {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-muted);
+}
+
 /* ─── Discovered (past stops only) ─── */
 .discovered {
   margin-bottom: 1.25rem;
