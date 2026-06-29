@@ -17,16 +17,17 @@ npm install
 npm run dev
 ```
 
-## Hunt (6 stops, stroller-friendly)
+## Hunt (7 stops)
 
 | # | Stop | Keyword examples |
 |---|------|------------------|
 | 1 | Petit-déjeuner — Holiday Inn | `holiday inn`, `déjeuner` |
-| 2 | Village piétonnier | `village` |
-| 3 | Place Saint-Bernard | `saint-bernard`, `horloge` |
+| 2 | Studio Créatif — poterie (10h) | `studio créatif`, `poterie` |
+| 3 | Village piétonnier | `village` |
+| 4 | Tour des grands chalets (en voiture) | `chalets`, `voiture` |
+| 5 | Place Saint-Bernard | `saint-bernard`, `horloge` |
 | 6 | Rocky Mountain Chocolate | `rocky mountain`, `chocolat`, `fudge` |
-| 5 | Lac Tremblant | `lac`, `plage` |
-| 6 | A Mano Trattoria | `a mano`, `italien` |
+| 7 | A Mano Trattoria | `a mano`, `italien` |
 
 Progress saves in the browser. Customize in `src/config.ts` and `src/data/hunt.ts`.
 
