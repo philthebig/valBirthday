@@ -3,8 +3,8 @@ import { config } from './config';
 import { huntStops } from './data/hunt';
 import { useHuntProgress } from './hooks/useHuntProgress';
 import { burstConfetti } from './utils/confetti';
+import { DiscoveredStops } from './components/DiscoveredStops';
 import { FinalTreasure } from './components/FinalTreasure';
-import { HuntMap } from './components/HuntMap';
 import { ProgressBar } from './components/ProgressBar';
 import { StopCard } from './components/StopCard';
 import { Welcome } from './components/Welcome';
@@ -20,11 +20,10 @@ export default function App() {
     currentIndex,
     isComplete,
     progress,
-    isStopCompleted,
   } = useHuntProgress(huntStops.length);
 
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [awaitingContinueId, setAwaitingContinueId] = useState<string | null>(null);
+  /** Current stop guessed but not yet continued to next riddle */
+  const [revealedId, setRevealedId] = useState<string | null>(null);
 
   if (!loaded) {
     return (
@@ -45,7 +44,7 @@ export default function App() {
     );
   }
 
-  if (isComplete && !awaitingContinueId) {
+  if (isComplete && !revealedId) {
     return (
       <main className="app app--final">
         <FinalTreasure />
@@ -57,23 +56,20 @@ export default function App() {
   }
 
   const activeStop = huntStops[currentIndex];
-  const celebratingStop = awaitingContinueId
-    ? huntStops.find((s) => s.id === awaitingContinueId)
-    : null;
-  const displayStop =
-    celebratingStop ??
-    (selectedId != null ? huntStops.find((s) => s.id === selectedId) : undefined) ??
-    activeStop;
+  const revealedStop = revealedId ? huntStops.find((s) => s.id === revealedId) : null;
+  const displayStop = revealedStop ?? activeStop;
+  const isRevealed = revealedId === displayStop?.id;
 
-  const handleComplete = (stop: (typeof huntStops)[number]) => {
+  const completedStops = huntStops.filter((s) => completedIds.includes(s.id) && s.id !== revealedId);
+
+  const handleReveal = (stop: (typeof huntStops)[number]) => {
     completeStop(stop.id);
     burstConfetti();
-    setSelectedId(null);
-    setAwaitingContinueId(stop.id);
+    setRevealedId(stop.id);
   };
 
   const handleContinue = () => {
-    setAwaitingContinueId(null);
+    setRevealedId(null);
   };
 
   return (
@@ -83,27 +79,23 @@ export default function App() {
         <h1 className="header__name">Pour {config.recipientName} 💛</h1>
       </header>
 
-      <ProgressBar progress={progress} current={completedIds.length} total={huntStops.length} />
-
-      <HuntMap
-        stops={huntStops}
-        completedIds={completedIds}
-        currentIndex={currentIndex}
-        onSelectStop={(s) => {
-          setAwaitingContinueId(null);
-          setSelectedId(s.id);
-        }}
-        selectedId={selectedId}
+      <ProgressBar
+        progress={progress}
+        current={completedIds.length}
+        total={huntStops.length}
+        label={isRevealed ? 'Destination dévoilée' : 'Énigmes résolues'}
       />
+
+      <DiscoveredStops completedStops={completedStops} total={huntStops.length} />
 
       {displayStop && (
         <StopCard
-          key={displayStop.id}
+          key={`${displayStop.id}-${isRevealed ? 'revealed' : 'mystery'}`}
           stop={displayStop}
-          completed={isStopCompleted(displayStop.id)}
-          onComplete={handleComplete}
-          onContinue={awaitingContinueId === displayStop.id ? handleContinue : undefined}
-          awaitingContinue={awaitingContinueId === displayStop.id}
+          totalStops={huntStops.length}
+          revealed={isRevealed}
+          onReveal={handleReveal}
+          onContinue={isRevealed ? handleContinue : undefined}
         />
       )}
     </main>

@@ -22,7 +22,7 @@ export function Welcome({ onStart }: WelcomeProps) {
         Commencer l'aventure 🗺️
       </button>
       <p className="welcome__footer">
-        {huntStops.length} trésors · Poterie 10h → Dîner & activité de ton choix → A Mano
+        {huntStops.length} énigmes à deviner — la destination reste secrète jusqu'à ce que tu trouves!
       </p>
     </div>
   );

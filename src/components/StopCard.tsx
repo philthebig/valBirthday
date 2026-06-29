@@ -4,17 +4,16 @@ import { matchesAnswer } from '../utils/normalize';
 
 interface StopCardProps {
   stop: HuntStop;
-  completed: boolean;
-  onComplete: (stop: HuntStop) => void;
+  totalStops: number;
+  revealed: boolean;
+  onReveal: (stop: HuntStop) => void;
   onContinue?: () => void;
-  awaitingContinue?: boolean;
 }
 
-export function StopCard({ stop, completed, onComplete, onContinue, awaitingContinue }: StopCardProps) {
+export function StopCard({ stop, totalStops, revealed, onReveal, onContinue }: StopCardProps) {
   const [answer, setAnswer] = useState('');
   const [showHint, setShowHint] = useState(false);
   const [error, setError] = useState('');
-  const [showFunFact, setShowFunFact] = useState(completed || awaitingContinue);
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${stop.lat},${stop.lng}`;
 
@@ -22,32 +21,51 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
     e.preventDefault();
     if (matchesAnswer(answer, stop.answers)) {
       setError('');
-      onComplete(stop);
-      setShowFunFact(true);
+      onReveal(stop);
     } else {
-      setError('Pas tout à fait… regarde autour de toi et réessaie! 🔍');
+      setError('Pas tout à fait… réfléchis encore un peu! 🤔');
     }
   };
 
-  if (completed && showFunFact) {
+  if (revealed) {
     return (
-      <div className="stop-card stop-card--done">
+      <div className="stop-card stop-card--revealed">
+        <p className="stop-card__reveal-eyebrow">✨ C'est parti pour…</p>
         <div className="stop-card__header">
-          <span className="stop-card__emoji" aria-hidden="true">
+          <span className="stop-card__emoji stop-card__emoji--big" aria-hidden="true">
             {stop.emoji}
           </span>
           <div>
             <h3 className="stop-card__title">{stop.name}</h3>
-            <p className="stop-card__badge">✓ Découvert!</p>
+            {stop.scheduledTime && (
+              <p className="stop-card__badge">🕐 {stop.scheduledTime}</p>
+            )}
+            {stop.flexibleTime && (
+              <p className="stop-card__badge stop-card__badge--flex">{stop.flexibleTime}</p>
+            )}
           </div>
         </div>
         <p className="stop-card__celebration">{stop.celebration}</p>
+        {stop.babyTip && (
+          <p className="stop-card__baby-tip">
+            <strong>👶 Avec Émile:</strong> {stop.babyTip}
+          </p>
+        )}
         <p className="stop-card__fun-fact">
           <strong>Le savais-tu?</strong> {stop.funFact}
         </p>
+        <a
+          href={mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn--ghost"
+          style={{ width: '100%', marginBottom: '0.75rem' }}
+        >
+          📍 Ouvrir dans Maps
+        </a>
         {onContinue && (
-          <button type="button" className="btn btn--primary" onClick={onContinue} style={{ marginTop: '1rem', width: '100%' }}>
-            Étape suivante →
+          <button type="button" className="btn btn--primary" onClick={onContinue} style={{ width: '100%' }}>
+            {stop.order < totalStops ? 'Prochaine énigme →' : 'Voir le trésor final →'}
           </button>
         )}
       </div>
@@ -55,27 +73,13 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
   }
 
   return (
-    <div className="stop-card">
-      <div className="stop-card__header">
-        <span className="stop-card__number">Étape {stop.order}</span>
-        {stop.scheduledTime && (
-          <span className="stop-card__time">🕐 {stop.scheduledTime}</span>
-        )}
-        {stop.flexibleTime && (
-          <span className="stop-card__time stop-card__time--flex">🚗 {stop.flexibleTime}</span>
-        )}
-        <span className="stop-card__emoji" aria-hidden="true">
-          {stop.emoji}
-        </span>
+    <div className="stop-card stop-card--mystery">
+      <div className="stop-card__mystery-badge" aria-hidden="true">
+        ❓
       </div>
-      <h3 className="stop-card__title">{stop.name}</h3>
+      <p className="stop-card__mystery-label">Énigme {stop.order}</p>
+      <h3 className="stop-card__mystery-title">Où allons-nous?</h3>
       <p className="stop-card__clue">{stop.clue}</p>
-
-      {stop.babyTip && (
-        <p className="stop-card__baby-tip">
-          <strong>👶 Avec Émile:</strong> {stop.babyTip}
-        </p>
-      )}
 
       {showHint && (
         <p className="stop-card__hint">
@@ -85,16 +89,13 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
 
       <div className="stop-card__actions-row">
         <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowHint(true)}>
-          {showHint ? '💡 Indice révélé' : '💡 Besoin d\'un indice?'}
+          {showHint ? '💡 Indice révélé' : '💡 Un petit indice?'}
         </button>
-        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="btn btn--ghost btn--sm">
-          📍 Ouvrir dans Maps
-        </a>
       </div>
 
       <form onSubmit={handleSubmit} className="stop-card__form">
         <label htmlFor={`answer-${stop.id}`} className="stop-card__label">
-          Quand tu es sur place, entre le nom du lieu (ou un mot-clé):
+          Devine la destination (un mot ou une expression):
         </label>
         <input
           id={`answer-${stop.id}`}
@@ -105,13 +106,17 @@ export function StopCard({ stop, completed, onComplete, onContinue, awaitingCont
             setAnswer(e.target.value);
             setError('');
           }}
-          placeholder="Ton indice secret…"
+          placeholder="Ta devinette…"
           autoComplete="off"
           autoCapitalize="off"
         />
-        {error && <p className="stop-card__error" role="alert">{error}</p>}
+        {error && (
+          <p className="stop-card__error" role="alert">
+            {error}
+          </p>
+        )}
         <button type="submit" className="btn btn--primary" disabled={!answer.trim()}>
-          J'ai trouvé! 🎯
+          J'ai deviné! 🎯
         </button>
       </form>
     </div>

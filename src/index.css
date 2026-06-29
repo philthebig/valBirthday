@@ -252,7 +252,115 @@ body {
   transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ─── Hunt Map ─── */
+/* ─── Discovered (past stops only) ─── */
+.discovered {
+  margin-bottom: 1.25rem;
+}
+
+.discovered__title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  margin: 0 0 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.discovered__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.discovered__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--mint);
+  background: rgba(52, 211, 153, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+}
+
+.discovered__emoji {
+  font-size: 1rem;
+}
+
+.discovered__name {
+  font-weight: 500;
+}
+
+.discovered__remaining {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0.65rem 0 0;
+  font-style: italic;
+}
+
+/* ─── Mystery stop card ─── */
+.stop-card--mystery {
+  border-color: rgba(167, 139, 250, 0.35);
+  background: rgba(167, 139, 250, 0.08);
+  text-align: center;
+}
+
+.stop-card__mystery-badge {
+  font-size: 2.5rem;
+  margin-bottom: 0.25rem;
+  animation: float 2.5s ease-in-out infinite;
+}
+
+.stop-card__mystery-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 0.25rem;
+}
+
+.stop-card__mystery-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.stop-card--mystery .stop-card__clue {
+  text-align: left;
+}
+
+.stop-card--mystery .stop-card__form {
+  text-align: left;
+}
+
+.stop-card--revealed {
+  border-color: rgba(251, 191, 36, 0.45);
+  background: rgba(251, 191, 36, 0.08);
+  animation: fadeUp 0.5s ease-out;
+}
+
+.stop-card__reveal-eyebrow {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0 0 0.75rem;
+}
+
+.stop-card__emoji--big {
+  font-size: 2.5rem;
+}
+
+.stop-card__badge--flex {
+  color: var(--mint) !important;
+  font-size: 0.8rem !important;
+}
+
+/* ─── Hunt Map (legacy, unused) ─── */
 .hunt-map {
   margin-bottom: 1.5rem;
 }
